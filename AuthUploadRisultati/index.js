@@ -3,7 +3,7 @@ exports.handler = async (event) => {
         "isAuthorized": false,
     };
 
-    if (event.headers.authorization === "OSLO") {
+    if (event.headers.authorization == "OSLO") {
         response = {
             "isAuthorized": true,
         };

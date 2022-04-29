@@ -33,14 +33,14 @@ async function SimulaXML (file,minutes) {
     output_json.ResultList.ClassResult.forEach(function (categoria) {//Per ogni categoria
         var i;
         for (i = categoria.PersonResult.length - 1; i >= 0; i -= 1) {//Ogni concorrente
-            if (!categoria.PersonResult[i].Result[0].FinishTime) {//Se non c'è il valore di arrivo
+            if (!categoria.PersonResult[i].Result[0].FinishTime) {//Se non c'Ã¨ il valore di arrivo
                 //Eliminare
                 continue;
             }
 
             var finish = moment("" + categoria.PersonResult[i].Result[0].FinishTime)//Data dell'arrivo del partecipante
 
-            if (finish.isAfter(now)) {//Se l'arrivo è dopo il momento selezionato in input
+            if (finish.isAfter(now)) {//Se l'arrivo Ã¨ dopo il momento selezionato in input
                 //Eliminare
 
             }

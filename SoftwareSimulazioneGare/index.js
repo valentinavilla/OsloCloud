@@ -35,7 +35,6 @@ async function SimulaXML (file,minutes) {
         for (i = categoria.PersonResult.length - 1; i >= 0; i -= 1) {//Ogni concorrente
             if (!categoria.PersonResult[i].Result[0].FinishTime) {//Se non c'è il valore di arrivo
                 //Eliminare
-                delete (categoria.PersonResult[i]);
                 continue;
             }
 
@@ -43,7 +42,6 @@ async function SimulaXML (file,minutes) {
 
             if (finish.isAfter(now)) {//Se l'arrivo è dopo il momento selezionato in input
                 //Eliminare
-                delete (categoria.PersonResult[i]);
             }
         }
     })

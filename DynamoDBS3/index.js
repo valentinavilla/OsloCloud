@@ -8,7 +8,7 @@ exports.handler = async (event) => {
 
     //Estrazione key
     const keyRaw = JSON.stringify(event.Records[0].s3.object.key);
-    const key_string = keyRaw.replace("+", " ");
+    const key_string = keyRaw.replace("+", ' ');
     const key = JSON.parse(key_string);
 
     //Get XML
@@ -29,10 +29,11 @@ exports.handler = async (event) => {
     const data_json = JSON.parse(data_string);
 
     //Creazione item DynamoDB
-    const nomeGara = "" + data_json.ResultList.Event[0].Name;
-    const dataGara = "" + data_json.ResultList.Event[0].StartTime[0].Date;
-    const OraInizioGara = "" + data_json.ResultList.Event[0].StartTime[0].Time;
-    const OraFineGara = "" + data_json.ResultList.Event[0].EndTime[0].Time;
+    const nomeGara = "" + data_json.root.nameEvent;
+    const dataGara = "" + data_json.root.dateEvent;
+    const email = "" + data_json.root.emailCreator;
+    const nomeFile = nomeGara + dataGara + ".xml";
+    const token = "" + data_json.root.token;
 
     var DynamoParams = {
         "TableName": 'Gare',
@@ -40,8 +41,9 @@ exports.handler = async (event) => {
         Item: {
             "Nome": { S: nomeGara },
             "Data": { S: dataGara },
-            "OraInizio": { S: OraInizioGara },
-            "OraFine": { S: OraFineGara }
+            "Email": { S: email },
+            "NomeFile": { S: nomeFile },
+            "Token": { S: token }
         }
     };
 

@@ -5,9 +5,26 @@ const DB = new AWS.DynamoDB();
 const bucket_name = "risultati-gare";      //Nome bucket
 
 exports.handler = async (event) => {
+
+    console.log(event)
+    if (!event.queryStringParameters) {
+        const response = {
+            statusCode: 400,
+            body: 'Parametro token mancante'
+        };
+        return response;
+    }
+    if (!event.queryStringParameters.token) {
+        const response = {
+            statusCode: 400,
+            body: 'Parametro token mancante'
+        };
+        return response;
+    }
+
     //Dati ricevuti dalla richiesta POST (data_xml -> XML)
     const data_xml = event.body;
-    const token = event.queryStringParameters.token
+    const token = event.queryStringParameters.token;
 
     //Dati XML convertiti in string (data_string -> String)
     const data_string = await parser.parseStringPromise(data_xml).then(function (result) {
@@ -22,15 +39,11 @@ exports.handler = async (event) => {
 
     //Recupero gara da DB
     const DBParams = {
-        FilterExpression: "t= :Token",
-        ExpressionAttributeNames: {
-            "#N": "Nome",
-            "#D": "Data"
-        },
         ExpressionAttributeValues: {
-            ":Token": { S: "557872c9-b1bc-4c39-bde5-3a360c424576" }
+            ":id": { S: token }
         },
-        ProjectionExpression: "#N, #D",
+        FilterExpression: "TokenGara= :id",
+        ProjectionExpression: "NomeGara, DataGara",
         TableName: "Gare",
     }
 
@@ -40,19 +53,27 @@ exports.handler = async (event) => {
         }
     }).promise();
 
-    console.log(datiDB.Items)
+    if (datiDB.Items.length == 0) {
+        const response = {
+            statusCode: 400,
+            body: 'Il codice non corrisponde a nessuna gara'
+        };
+        return response;
+    }
+
+    const nomeGara = datiDB.Items[0].NomeGara.S;
+    const dataGara = datiDB.Items[0].DataGara.S;
 
     //Definizione dei parametri per upload
     const S3Params = {
         Bucket: bucket_name,
-        Key: "a.xml",
+        Key: nomeGara + dataGara + ".xml",
         Body: data_xml
     };
 
     //Upload del file
     await S3.putObject(S3Params, function (err, data) {
-        if (err) console.log(err, err.stack); // an error occurred
-        else console.log(data);           // successful response
+        if (err) console.log(err, err.stack);
     }).promise();
 
     //Risposta alla richiesta POST

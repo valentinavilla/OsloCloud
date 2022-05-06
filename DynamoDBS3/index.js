@@ -39,11 +39,11 @@ exports.handler = async (event) => {
         "TableName": 'Gare',
 
         Item: {
-            "Nome": { S: nomeGara },
-            "Data": { S: dataGara },
+            "NomeGara": { S: nomeGara },
+            "DataGara": { S: dataGara },
             "Email": { S: email },
             "NomeFile": { S: nomeFile },
-            "Token": { S: token }
+            "TokenGara": { S: token }
         }
     };
 

@@ -8,7 +8,7 @@ exports.handler = async (event) => {
 
     //Estrazione key
     const keyRaw = JSON.stringify(event.Records[0].s3.object.key);
-    const key_string = keyRaw.replace("+", ' ');
+    const key_string = keyRaw.replace("+",' ');
     const key = JSON.parse(key_string);
 
     //Get XML
@@ -48,7 +48,7 @@ exports.handler = async (event) => {
     };
 
     //Inserimento in DynamoDB
-    DB.putItem(DynamoParams, function (err, data) {
-        if (err) throw err;
-    });
+    await DB.putItem(DynamoParams, function (err, data) {
+    if (err) throw err;
+    }).promise();
 };

@@ -1,13 +1,13 @@
 const AWS = require('aws-sdk');        //Import AWS
 const parser = require('xml2js');      //Import parser XML->JSON
 const S3 = new AWS.S3;                  //Inizializzazione variabile bucket
-const DB = new AWS.DynamoDB();
+const DB = new AWS.DynamoDB();          //Inizializzazione DynamoDB
 const bucket_name = "risultati-gare";      //Nome bucket
 
 exports.handler = async (event) => {
 
     console.log(event)
-    //Controllo parametri inseriti
+//Controllo parametri inseriti
     if (!event.queryStringParameters) {//Non sono inseriti parametri
         const response = {
             statusCode: 400,
@@ -23,6 +23,7 @@ exports.handler = async (event) => {
         return response;
     }
 
+//Estrazione dati (data_xml, data_string, data_json)
     //Dati ricevuti dalla richiesta POST (data_xml -> XML)
     const data_xml = event.body;
     const token = event.queryStringParameters.token;
@@ -38,7 +39,8 @@ exports.handler = async (event) => {
     //Dati String convertiti in JSON (data_json ->JSON)
     const data_json = JSON.parse(data_string);
 
-    //Recupero gara da DB
+//Recupero gara da DB
+    //Parametri query su DB
     const DBParams = {
         ExpressionAttributeValues: {
             ":id": { S: token }
@@ -47,7 +49,7 @@ exports.handler = async (event) => {
         ProjectionExpression: "NomeGara, DataGara",
         TableName: "Gare",
     }
-
+    //Estrazione di NomeGara e DataGara corrispondenti al token inserito
     const datiDB = await DB.scan(DBParams, function (err, data) {
         if (err) {
             console.log("Error", err);
@@ -63,9 +65,30 @@ exports.handler = async (event) => {
         return response;
     }
 
+    //Salvataggio valori estratti
     const nomeGara = datiDB.Items[0].NomeGara.S;
     const dataGara = datiDB.Items[0].DataGara.S;
 
+//Check file xml
+    //Controllo che Event.Name e Event.StartTime.Date (file xml) siano coerenti a quelli salvati nel DB
+    if(data_json.ResultList.Event[0].Name!=nomeGara){
+        const response = {
+            statusCode: 400,
+            body: "Il nome dell' evento contenuto nell'XML non corrisponde al token inserito"
+        };
+        return response;
+    }
+    if(data_json.ResultList.Event[0].StartTime[0].Date!=dataGara){
+        const response = {
+            statusCode: 400,
+            body: "La data dell' evento contenuta nell'XML non corrisponde al token inserito"
+        };
+        return response;
+    }
+    
+    //Controllo che il file XML contenga i campi obbligatori
+
+//Caricamentro file xml su S3
     //Definizione dei parametri per upload
     const S3Params = {
         Bucket: bucket_name,
@@ -78,7 +101,7 @@ exports.handler = async (event) => {
         if (err) console.log(err, err.stack);
     }).promise();
 
-    //Risposta alla richiesta POST
+//Risposta alla richiesta POST
     const response = {
         statusCode: 200,
         body: 'Gara registrata!'

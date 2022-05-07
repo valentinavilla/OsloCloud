@@ -6,8 +6,15 @@ var builder = new xml2js.Builder();
 const uuid = require('uuid');
 
 exports.handler = async (event) => {
-
-    if (!event.queryStringParameters.name || !event.queryStringParameters.date || !event.queryStringParameters.email) {
+    //Controllo inserimento parametri
+    if (!event.queryStringParameters) {//Non sono inseriti parametri
+        const response = {
+            statusCode: 400,
+            body: 'Parametri mancanti'
+        };
+        return response;
+    }
+    if (!event.queryStringParameters.name || !event.queryStringParameters.date || !event.queryStringParameters.email) {//Manca almeno un parametro
         const response = {
             statusCode: 400,
             body: "Parametri mancanti"

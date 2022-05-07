@@ -7,14 +7,15 @@ const bucket_name = "risultati-gare";      //Nome bucket
 exports.handler = async (event) => {
 
     console.log(event)
-    if (!event.queryStringParameters) {
+    //Controllo parametri inseriti
+    if (!event.queryStringParameters) {//Non sono inseriti parametri
         const response = {
             statusCode: 400,
             body: 'Parametro token mancante'
         };
         return response;
     }
-    if (!event.queryStringParameters.token) {
+    if (!event.queryStringParameters.token) {//Manca almeno un parametro
         const response = {
             statusCode: 400,
             body: 'Parametro token mancante'
@@ -53,6 +54,7 @@ exports.handler = async (event) => {
         }
     }).promise();
 
+    //Controllo validità token
     if (datiDB.Items.length == 0) {
         const response = {
             statusCode: 400,

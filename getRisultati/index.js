@@ -5,9 +5,15 @@ const S3 = new AWS.S3;//Inizializzazione S3
 const bucket_name = "risultati-gare";//Nome bucket
 
 exports.handler = async (event) => {
-
-    //Gestione caso parametri mancanti
-    if (!event.queryStringParameters.name || !event.queryStringParameters.date) {
+    //Controllo inserimento parametri
+    if (!event.queryStringParameters) {//Non sono inseriti parametri
+        const response = {
+            statusCode: 400,
+            body: 'Parametri mancanti'
+        };
+        return response;
+    }
+    if (!event.queryStringParameters.name || !event.queryStringParameters.date) {//Almeno un parametro mancante
         const response = {
             statusCode: 400,
             body: "Parametri mancanti"

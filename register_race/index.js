@@ -1,9 +1,9 @@
-const AWS = require('aws-sdk');
-const S3 = new AWS.S3;
-const bucket_name = "risultati-gare";
-const xml2js = require('xml2js');
-var builder = new xml2js.Builder();
-const uuid = require('uuid');
+const AWS = require('aws-sdk');//Import aws-sdk
+const xml2js = require('xml2js');//Import xml2js
+const uuid = require('uuid');//Import UUID
+const S3 = new AWS.S3;//Inizializzazione bucket
+const bucket_name = "risultati-gare";//Nome bucket
+var builder = new xml2js.Builder();//Inizializzazione builder xml
 
 exports.handler = async (event) => {
     //Controllo inserimento parametri
@@ -22,28 +22,29 @@ exports.handler = async (event) => {
         return response;
     }
 
+    //Estrazione parametri
     const name = event.queryStringParameters.name;
     const date = event.queryStringParameters.date;
     const email = event.queryStringParameters.email;
     const token = uuid.v4();
-
     const file = {
         nameEvent: name,
         dateEvent: date,
         emailCreator: email,
         token: token
     }
-
+    //Costruzione file XML
     var file_xml = builder.buildObject(file)
 
+    //Caricamento del file di registrazione nel bucket
     const params = {
         Bucket: bucket_name,
         Key: name + date + ".xml",
         Body: file_xml
     }
-
     await S3.putObject(params).promise();
 
+    //Risposta
     const response = {
         statusCode: 200,
         body: "Gara creata\n IDGara = " + name + date + "\n token = " + token

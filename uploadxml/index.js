@@ -1,7 +1,7 @@
 const AWS = require('aws-sdk');        //Import AWS
 const parser = require('xml2js');      //Import parser XML->JSON
 const xmllint = require('xmllint');    //Import check XML 
-const fs=require('fs');
+const fs=require('fs');                //Import fs
 const S3 = new AWS.S3;                  //Inizializzazione variabile bucket
 const DB = new AWS.DynamoDB();          //Inizializzazione DynamoDB
 const bucket_name = "risultati-gare";      //Nome bucket
@@ -74,12 +74,10 @@ exports.handler = async (event) => {
 //Check file xml
     //Controllo che il file XML rispetti lo standard
     const xsd=fs.readFileSync("Standard.xsd","utf8");
-
     const validationOpt={
         xml:data_xml,
         schema:xsd
     };
-
     if(xmllint.validateXML(validationOpt).errors){
         const response = {
             statusCode: 400,

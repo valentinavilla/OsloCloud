@@ -1,6 +1,5 @@
 const AWS = require('aws-sdk');//Import AWS
 const parser = require("xml2js")//Import parser xml->json
-
 const S3 = new AWS.S3;//Inizializzazione S3
 const bucket_name = "risultati-gare";//Nome bucket
 
@@ -9,22 +8,21 @@ exports.handler = async (event) => {
     if (!event.queryStringParameters) {//Non sono inseriti parametri
         const response = {
             statusCode: 400,
-            body: 'Parametri mancanti'
+            body: 'Parametro mancante'
         };
         return response;
     }
-    if (!event.queryStringParameters.name || !event.queryStringParameters.date) {//Almeno un parametro mancante
+    if (!event.queryStringParameters.ID) {//Almeno un parametro mancante
         const response = {
             statusCode: 400,
-            body: "Parametri mancanti"
+            body: "Parametro mancante"
         }
         return response;
     }
 
     //Setup dei parametri di ricerca
-    const name = event.queryStringParameters.name
-    const date = event.queryStringParameters.date
-    const data_key = name + date + ".xml"
+    const ID = event.queryStringParameters.ID
+    const data_key = ID+ ".xml"
 
     const params = {
         Bucket: bucket_name,
@@ -44,9 +42,12 @@ exports.handler = async (event) => {
         });
 
     //Estrazione lista delle categorie
-    const data_json = JSON.parse(data_string)
-    const classlist = data_json.ResultList.ClassResult
-
+    const data_json = JSON.parse(data_string);
+    const classlist = data_json.ResultList.ClassResult;
+    var ris=[];
+    classlist.forEach(function (element){
+        ris.push(element.Class[0].Name[0]);
+    });
 
     //Risposta 
     const response = {
@@ -54,8 +55,7 @@ exports.handler = async (event) => {
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify(classlist)
-
+        body: JSON.stringify(ris)
     };
     return response;
 };

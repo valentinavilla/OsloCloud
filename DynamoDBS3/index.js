@@ -1,7 +1,7 @@
-const AWS = require('aws-sdk');
-const parser = require('xml2js');
-const DB = new AWS.DynamoDB();
-const S3 = new AWS.S3;
+const AWS = require('aws-sdk');//Import aws-sdk
+const parser = require('xml2js');//Import xml2js
+const DB = new AWS.DynamoDB();//Inizializzazione DB
+const S3 = new AWS.S3;//Inizializzazione Bucket
 exports.handler = async (event) => {
     //Estrazione nome bucket
     const bucket = event.Records[0].s3.bucket.name;
@@ -34,16 +34,17 @@ exports.handler = async (event) => {
     const email = "" + data_json.root.emailCreator;
     const nomeFile = nomeGara + dataGara + ".xml";
     const token = "" + data_json.root.token;
+    const id=""+nomeGara+dataGara;
 
     var DynamoParams = {
         "TableName": 'Gare',
-
         Item: {
             "NomeGara": { S: nomeGara },
             "DataGara": { S: dataGara },
             "Email": { S: email },
             "NomeFile": { S: nomeFile },
-            "TokenGara": { S: token }
+            "TokenGara": { S: token },
+            "ID": {S: id}
         }
     };
 

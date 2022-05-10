@@ -37,7 +37,7 @@ exports.handler = async (event) => {
     var bodyRes=buff.toString('base64');
     
     //Risposta (e download)
-    const response = await {
+    const response = {
             statusCode: 200,
             body: bodyRes,
             headers:{

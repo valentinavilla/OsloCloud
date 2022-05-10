@@ -18,7 +18,10 @@ exports.handler = async (event) =>{
     //Risposta
     const response = {
         statusCode: 200,
-        body: ListaGare
+        body: JSON.stringify(ListaGare),
+        headers: {
+            "Content-Type":"application/json"
+        }
     };
     return response;
 }

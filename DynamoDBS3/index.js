@@ -7,8 +7,9 @@ exports.handler = async (event) => {
     const bucket = event.Records[0].s3.bucket.name;
 
     //Estrazione key
-    const keyRaw = JSON.stringify(event.Records[0].s3.object.key);
-    const key_string = keyRaw.replace("+",' ');
+    const keyRaw1 = JSON.stringify(event.Records[0].s3.object.key);
+    const keyRaw2 = keyRaw1.split('+').join(" ");
+    const key_string = decodeURIComponent(keyRaw2);
     const key = JSON.parse(key_string);
 
     //Get XML

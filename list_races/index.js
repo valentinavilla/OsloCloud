@@ -1,5 +1,5 @@
 const AWS = require('aws-sdk');//Import aws-sdk
-const DB = AWS.DynamoDB();//Inizializzazione DB
+const DB = new AWS.DynamoDB();//Inizializzazione DB
 
 exports.handler = async (event) =>{
     //Parametri per la selezione del DB

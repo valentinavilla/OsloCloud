@@ -15,6 +15,15 @@ exports.handler = async (event) =>{
         }
     }).promise();
 
+    var res = [];
+    ListaGare.Items.forEach(function (element){
+        var race = {};
+        race.NomeGara=element.NomeGara.S;
+        race.ID=element.ID.S;
+        race.DataGara=element.DataGara.S;
+        res.push(race);
+    });
+
     //Risposta
     const response = {
         statusCode: 200,

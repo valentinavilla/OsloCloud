@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 
 class ResultBox extends StatelessWidget {
@@ -8,13 +7,17 @@ class ResultBox extends StatelessWidget {
   final String? position;
   final String? timeBehind;
   final int colorSel; //0->even, 1->odd, 2->new
+  final bool isNew;
   const ResultBox(this.persName, this.orgName, this.position, this.timeBehind,
-      this.colorSel,
+      this.colorSel, this.isNew,
       {Key? key})
       : super(key: key);
 
-  Color selectColor(int colorSel) {
+  Color selectColor(int colorSel, bool isNew) {
     colorSel = this.colorSel;
+    if (isNew) {
+      colorSel = 2;
+    }
     if (colorSel == 0) {
       return Colors.grey;
     } else if (colorSel == 1) {
@@ -26,7 +29,9 @@ class ResultBox extends StatelessWidget {
 
   Text org(String? orgName) {
     if (orgName == null) {
-      return const Text("NoORg");
+      return const Text(
+        "NoORg",
+      );
     } else {
       return Text(utf8.decode(orgName.runes.toList()));
     }
@@ -36,7 +41,7 @@ class ResultBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        color: selectColor(colorSel),
+        color: selectColor(colorSel, isNew),
         height: 60,
         width: MediaQuery.of(context).size.width,
         child: Column(
@@ -64,7 +69,9 @@ class ResultBox extends StatelessWidget {
                   alignment: Alignment.bottomLeft,
                   child: org(orgName),
                 ),
-                Text(timeBehind!), //Basso destra
+                Text(
+                  timeBehind!,
+                ), //Basso destra
               ],
             )
           ],

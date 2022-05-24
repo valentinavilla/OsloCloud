@@ -32,6 +32,9 @@ class ClassResultsRoute extends StatefulWidget {
 
 class ClassResultsRouteState extends State<ClassResultsRoute> {
   late Future<List<Map<String, dynamic>>> futureResult;
+  late List<Map<String, dynamic>> results;
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      GlobalKey<RefreshIndicatorState>();
 
   @override
   void initState() {
@@ -40,8 +43,25 @@ class ClassResultsRouteState extends State<ClassResultsRoute> {
   }
 
   Future<void> _refresh() async {
+    List<Map<String, dynamic>> oldData = results;
     setState(() {
       futureResult = fetchResults(widget.raceid, widget.className);
+      futureResult.then((newData) => {
+            newData.forEach((element) {
+              var found = false;
+              oldData.forEach((oldElement) {
+                if (element["Person"][0]["Id"][0] ==
+                    oldElement["Person"][0]["Id"][0]) {
+                  found = true;
+                }
+              });
+              if (found) {
+                element["isNew"] = false;
+              } else {
+                element["isNew"] = true;
+              }
+            })
+          });
     });
   }
 
@@ -50,14 +70,19 @@ class ClassResultsRouteState extends State<ClassResultsRoute> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Risultati ${widget.className}'),
+        backgroundColor: Color.fromARGB(255, 97, 206, 100),
       ),
       body: Center(
         child: FutureBuilder<List<Map<String, dynamic>>>(
           future: futureResult,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              var results = snapshot.data!;
+              results = snapshot.data!;
               return RefreshIndicator(
+                  key: _refreshIndicatorKey,
+                  color: Colors.white,
+                  backgroundColor: Colors.lightGreen,
+                  strokeWidth: 4.0,
                   onRefresh: _refresh,
                   child: ListView.builder(
                       itemCount: results.length,
@@ -72,7 +97,8 @@ class ClassResultsRouteState extends State<ClassResultsRoute> {
                                 '${results[index]["Organisation"]?[0]["Name"][0]}',
                                 "Posizione: ${results[index]["Result"][0]["Position"]?[0]}",
                                 "00:00:00",
-                                index % 2);
+                                index % 2,
+                                isNuovo(results[index]));
                           }
 
                           String stringStart = //Calcolo finish-start
@@ -98,7 +124,8 @@ class ClassResultsRouteState extends State<ClassResultsRoute> {
                               '${results[index]["Organisation"]?[0]["Name"][0]}',
                               "Posizione: ${results[index]["Result"][0]["Position"]?[0]}",
                               firstTime.toString().split(".")[0],
-                              index % 2);
+                              index % 2,
+                              isNuovo(results[index]));
                         } else if ("${results[index]["Result"][0]["Status"][0]}" !=
                             'OK') {
                           //Caso giocatore non classificato (timebehind=NC)
@@ -107,7 +134,8 @@ class ClassResultsRouteState extends State<ClassResultsRoute> {
                               '${results[index]["Organisation"]?[0]["Name"][0]}',
                               "Posizione: ${results[index]["Result"][0]["Position"]?[0]}",
                               "NC",
-                              index % 2);
+                              index % 2,
+                              isNuovo(results[index]));
                         } else {
                           //Altri risultati (si indica il timeBehind invece che il tempo impiegato)
                           Duration tBehind = Duration(
@@ -119,21 +147,34 @@ class ClassResultsRouteState extends State<ClassResultsRoute> {
                               '${results[index]["Organisation"]?[0]["Name"][0]}',
                               "Posizione: ${results[index]["Result"][0]["Position"]?[0]}",
                               "+${tBehind.toString().split(".")[0]}",
-                              index % 2);
+                              index % 2,
+                              isNuovo(results[index]));
                         }
                       })));
             } else if (snapshot.hasError) {
               return Text('${snapshot.error}');
             }
-            return const CircularProgressIndicator();
+            return const CircularProgressIndicator(color: Colors.lightGreen);
           },
         ),
       ),
       floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            _refresh;
-          },
-          child: const Icon(Icons.refresh)),
+        onPressed: () {
+          // Show refresh indicator programmatically on button tap.
+          _refreshIndicatorKey.currentState?.show();
+        },
+        backgroundColor: Colors.lightGreen,
+        child: const Icon(Icons.refresh_rounded),
+      ),
     );
+  }
+
+  bool isNuovo(Map<String, dynamic> result) {
+    if (result["isNew"] != null) {
+      if (result["isNew"]) {
+        return (true);
+      }
+    }
+    return (false);
   }
 }

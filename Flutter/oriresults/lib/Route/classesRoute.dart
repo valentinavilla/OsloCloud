@@ -5,14 +5,17 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:oriresults/Route/classResultsRoute.dart';
+import 'package:oriresults/Route/classStartRoute.dart';
+import 'package:oriresults/Widget/menuButtonStyle.dart';
 
 const apiUrl = 'https://cghd6kwn0k.execute-api.us-east-1.amazonaws.com';
 
-Future<List<String>> fetchClasses(String raceid) async {
+Future<List<String>> fetchClasses(String raceid, String? startOrResult) async {
   //Come nella schermata precedente si crea una funzione di fetch per il caricamento
   //questa volta delle categorie di una certa gara identificata con il suo id
 
-  final response = await http.get(Uri.parse('$apiUrl/list_classes?ID=$raceid'));
+  final response = await http.get(Uri.parse(
+      '$apiUrl/list_classes?ID=$raceid&startOrResult=$startOrResult'));
 
   if (response.statusCode == 200) {
     return List<String>.from(jsonDecode(response.body));
@@ -24,7 +27,9 @@ Future<List<String>> fetchClasses(String raceid) async {
 
 class ClassesRoute extends StatefulWidget {
   final String raceid;
-  const ClassesRoute(this.raceid, {Key? key}) : super(key: key);
+  final String? startOrResult;
+  const ClassesRoute(this.raceid, this.startOrResult, {Key? key})
+      : super(key: key);
 
   @override
   ClassesRouteState createState() => ClassesRouteState();
@@ -32,16 +37,18 @@ class ClassesRoute extends StatefulWidget {
 
 class ClassesRouteState extends State<ClassesRoute> {
   late Future<List<String>> futureClasses;
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      GlobalKey<RefreshIndicatorState>();
 
   @override
   void initState() {
     super.initState();
-    futureClasses = fetchClasses(widget.raceid);
+    futureClasses = fetchClasses(widget.raceid, widget.startOrResult);
   }
 
   Future<void> _refresh() async {
     setState(() {
-      futureClasses = fetchClasses(widget.raceid);
+      futureClasses = fetchClasses(widget.raceid, widget.startOrResult);
     });
   }
 
@@ -50,6 +57,8 @@ class ClassesRouteState extends State<ClassesRoute> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Categorie'),
+        backgroundColor: Color.fromARGB(255, 97, 206, 100),
+        centerTitle: true,
       ),
       body: Center(
           child: FutureBuilder<List<String>>(
@@ -58,17 +67,26 @@ class ClassesRouteState extends State<ClassesRoute> {
                 if (snapshot.hasData) {
                   List<String> classes = snapshot.data!;
                   return RefreshIndicator(
+                      key: _refreshIndicatorKey,
+                      color: Colors.white,
+                      backgroundColor: Colors.lightGreen,
+                      strokeWidth: 4.0,
                       onRefresh: _refresh,
                       child: ListView.builder(
                           itemCount: classes.length,
+                          padding: EdgeInsets.fromLTRB(
+                              MediaQuery.of(context).size.width * 0.02,
+                              MediaQuery.of(context).size.height * 0.01,
+                              MediaQuery.of(context).size.width * 0.02,
+                              MediaQuery.of(context).size.height * 0.01),
                           itemBuilder: ((context, index) => ElevatedButton(
+                                style: menuButtonStyle(),
                                 onPressed: () {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) =>
-                                              ClassResultsRoute(widget.raceid,
-                                                  classes[index])));
+                                          builder: (context) => ClassRoute(
+                                              widget.raceid, classes[index])));
                                 },
                                 child: Text(classes[index]),
                               ))));
@@ -79,10 +97,21 @@ class ClassesRouteState extends State<ClassesRoute> {
                 return const CircularProgressIndicator();
               })),
       floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            _refresh;
-          },
-          child: const Icon(Icons.refresh)),
+        onPressed: () {
+          // Show refresh indicator programmatically on button tap.
+          _refreshIndicatorKey.currentState?.show();
+        },
+        backgroundColor: Colors.lightGreen,
+        child: const Icon(Icons.refresh_rounded),
+      ),
     );
+  }
+
+  ClassRoute(String raceid, String classSel) {
+    if (widget.startOrResult == 'Result') {
+      return ClassResultsRoute(raceid, classSel);
+    } else {
+      return ClassStartRoute(raceid, classSel);
+    }
   }
 }

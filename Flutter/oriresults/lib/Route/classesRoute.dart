@@ -60,42 +60,47 @@ class ClassesRouteState extends State<ClassesRoute> {
         backgroundColor: Color.fromARGB(255, 97, 206, 100),
         centerTitle: true,
       ),
-      body: Center(
-          child: FutureBuilder<List<String>>(
-              future: futureClasses,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  List<String> classes = snapshot.data!;
-                  return RefreshIndicator(
-                      key: _refreshIndicatorKey,
-                      color: Colors.white,
-                      backgroundColor: Colors.lightGreen,
-                      strokeWidth: 4.0,
-                      onRefresh: _refresh,
-                      child: ListView.builder(
-                          itemCount: classes.length,
-                          padding: EdgeInsets.fromLTRB(
-                              MediaQuery.of(context).size.width * 0.02,
-                              MediaQuery.of(context).size.height * 0.01,
-                              MediaQuery.of(context).size.width * 0.02,
-                              MediaQuery.of(context).size.height * 0.01),
-                          itemBuilder: ((context, index) => ElevatedButton(
-                                style: menuButtonStyle(),
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => ClassRoute(
-                                              widget.raceid, classes[index])));
-                                },
-                                child: Text(classes[index]),
-                              ))));
-                } else if (snapshot.hasError) {
-                  return Text('${snapshot.data}');
-                }
+      body: Container(
+          decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage("assets/sfondo.jpg"), fit: BoxFit.cover)),
+          child: Center(
+              child: FutureBuilder<List<String>>(
+                  future: futureClasses,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      List<String> classes = snapshot.data!;
+                      return RefreshIndicator(
+                          key: _refreshIndicatorKey,
+                          color: Colors.white,
+                          backgroundColor: Colors.lightGreen,
+                          strokeWidth: 4.0,
+                          onRefresh: _refresh,
+                          child: ListView.builder(
+                              itemCount: classes.length,
+                              padding: EdgeInsets.fromLTRB(
+                                  MediaQuery.of(context).size.width * 0.02,
+                                  MediaQuery.of(context).size.height * 0.01,
+                                  MediaQuery.of(context).size.width * 0.02,
+                                  MediaQuery.of(context).size.height * 0.01),
+                              itemBuilder: ((context, index) => ElevatedButton(
+                                    style: menuButtonStyle(),
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => ClassRoute(
+                                                  widget.raceid,
+                                                  classes[index])));
+                                    },
+                                    child: Text(classes[index]),
+                                  ))));
+                    } else if (snapshot.hasError) {
+                      return Text('${snapshot.data}');
+                    }
 
-                return const CircularProgressIndicator();
-              })),
+                    return const CircularProgressIndicator();
+                  }))),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // Show refresh indicator programmatically on button tap.

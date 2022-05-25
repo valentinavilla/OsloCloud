@@ -71,36 +71,41 @@ class ClassStartRouteState extends State<ClassStartRoute> {
         title: Text('Start ${widget.className}'),
         backgroundColor: Color.fromARGB(255, 97, 206, 100),
       ),
-      body: Center(
-        child: FutureBuilder<List<Map<String, dynamic>>>(
-          future: futureStart,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              startList = snapshot.data!;
-              return RefreshIndicator(
-                  onRefresh: _refresh,
-                  child: ListView.builder(
-                      itemCount: startList.length,
-                      itemBuilder: ((context, index) {
-                        String stringStart = //Calcolo finish-start
-                            "${startList[index]["Start"][0]["StartTime"][0]}";
-                        stringStart = stringStart.split("T")[1];
-                        stringStart = stringStart.split("+")[0];
-                        return ResultBox(
-                            '${startList[index]["Person"][0]["Name"][0]["Family"][0]} ${startList[index]["Person"][0]["Name"][0]["Given"][0]}',
-                            '${startList[index]["Organisation"]?[0]["Name"][0]}',
-                            "",
-                            stringStart,
-                            index % 2,
-                            isNuovo(startList[index]));
-                      })));
-            } else if (snapshot.hasError) {
-              return Text('${snapshot.error}');
-            }
-            return const CircularProgressIndicator(color: Colors.lightGreen);
-          },
-        ),
-      ),
+      body: Container(
+          decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage("assets/sfondo.jpg"), fit: BoxFit.cover)),
+          child: Center(
+            child: FutureBuilder<List<Map<String, dynamic>>>(
+              future: futureStart,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  startList = snapshot.data!;
+                  return RefreshIndicator(
+                      onRefresh: _refresh,
+                      child: ListView.builder(
+                          itemCount: startList.length,
+                          itemBuilder: ((context, index) {
+                            String stringStart = //Calcolo finish-start
+                                "${startList[index]["Start"][0]["StartTime"][0]}";
+                            stringStart = stringStart.split("T")[1];
+                            stringStart = stringStart.split("+")[0];
+                            return ResultBox(
+                                '${startList[index]["Person"][0]["Name"][0]["Family"][0]} ${startList[index]["Person"][0]["Name"][0]["Given"][0]}',
+                                '${startList[index]["Organisation"]?[0]["Name"][0]}',
+                                "",
+                                stringStart,
+                                index % 2,
+                                isNuovo(startList[index]));
+                          })));
+                } else if (snapshot.hasError) {
+                  return Text('${snapshot.error}');
+                }
+                return const CircularProgressIndicator(
+                    color: Colors.lightGreen);
+              },
+            ),
+          )),
       floatingActionButton: FloatingActionButton(
           onPressed: () {
             _refresh;

@@ -136,9 +136,14 @@ class _MyAppState extends State<MyApp> {
         centerTitle: true, //centrato
         backgroundColor: Color.fromARGB(255, 97, 206, 100),
       ),
-      body: Center(
+      body: Container(
+        decoration: BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage("assets/sfondo.jpg"), fit: BoxFit.cover)),
+
         //Il body è un center (contenuto centrato) che avrà una serie di child
-        child: FutureBuilder<List<Map<String, dynamic>>>(
+        child: Center(
+            child: FutureBuilder<List<Map<String, dynamic>>>(
           //I figli sono dei FutureBuilder
           //ovvero widget costruiti quando avrò i dati disponibili
           future: futureRaces, //Il future è futureRaces
@@ -166,27 +171,10 @@ class _MyAppState extends State<MyApp> {
                           MediaQuery.of(context).size.height * 0.01,
                           MediaQuery.of(context).size.width * 0.02,
                           MediaQuery.of(context).size.height * 0.01),
-                      itemBuilder: ((context,
-                                  index) => /*DropdownButton<String>(
-                            value: "",
-                            items: [
-                              DropdownMenuItem(
-                                  child: MenuButton("Start", "", "", ""),
-                                  value: "Start"),
-                              DropdownMenuItem(
-                                  child: MenuButton("Result", "", "", ""),
-                                  value: "Result")
-                            ],
-                            onChanged: (String? value) {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ClassesRoute(
-                                          races[index]["ID"], value)));
-                            },*/
-                              ElevatedButton(
+                      itemBuilder: ((context, index) => ElevatedButton(
                                 //Ogni item è un bottone
-                                onPressed: () {
+                                onPressed:
+                                    null /*() {
                                   //Quando si preme il bottone
                                   Navigator.push(
                                     //Mi muovo in un altra pagina
@@ -198,14 +186,15 @@ class _MyAppState extends State<MyApp> {
                                                 races[index]["ID"])),
                                     //Schermata definita nel secondo file .dart
                                   );
-                                },
+                                }*/
+                                ,
                                 style: menuButtonStyle(),
 
                                 child: MainMenuButton(
                                   '${races[index]["DataGara"]}',
-                                  isNuovo(races[index]),
                                   '${races[index]["NomeGara"]}',
-                                  "",
+                                  isNuovo(races[index]),
+                                  races[index]["ID"],
                                 ),
                               )
                           //Il bottone contiene il nome della categoria dell'indice giusto
@@ -218,7 +207,7 @@ class _MyAppState extends State<MyApp> {
             return const CircularProgressIndicator(color: Colors.lightGreen);
             //Di base mostriamo un caricamento (prima di aver ricevuto i dati)
           },
-        ),
+        )),
       ),
       drawer: Drawer(
           child: ListView(
@@ -297,7 +286,7 @@ class _MyAppState extends State<MyApp> {
 isNuovo(race) {
   if (race["isNew"] != null) {
     if (race["isNew"]) {
-      return ("NUOVO");
+      return ("N\nE\nW");
     }
   }
   return ("");

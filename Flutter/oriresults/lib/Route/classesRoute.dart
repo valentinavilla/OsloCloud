@@ -99,7 +99,9 @@ class ClassesRouteState extends State<ClassesRoute> {
                       return Text('${snapshot.data}');
                     }
 
-                    return const CircularProgressIndicator();
+                    return const CircularProgressIndicator(
+                      color: Colors.lightGreen,
+                    );
                   }))),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

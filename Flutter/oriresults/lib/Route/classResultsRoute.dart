@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:async';
-//import 'dart:html';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -69,7 +68,7 @@ class ClassResultsRouteState extends State<ClassResultsRoute> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Results (${widget.className})'),
+        title: Text('Risultati ${widget.className}'),
         backgroundColor: Color.fromARGB(255, 97, 206, 100),
       ),
       body: Container(

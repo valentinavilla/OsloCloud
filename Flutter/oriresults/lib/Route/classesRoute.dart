@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:async';
-//import 'dart:html';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -56,7 +55,7 @@ class ClassesRouteState extends State<ClassesRoute> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Classes'),
+        title: const Text('Categorie'),
         backgroundColor: Color.fromARGB(255, 97, 206, 100),
         centerTitle: true,
       ),
@@ -99,7 +98,9 @@ class ClassesRouteState extends State<ClassesRoute> {
                       return Text('${snapshot.data}');
                     }
 
-                    return const CircularProgressIndicator();
+                    return const CircularProgressIndicator(
+                      color: Colors.lightGreen,
+                    );
                   }))),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

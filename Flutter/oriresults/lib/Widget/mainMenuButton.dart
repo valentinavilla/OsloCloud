@@ -19,8 +19,8 @@ class MainMenuButton extends StatelessWidget {
         columnWidths: {
           0: FlexColumnWidth(MediaQuery.of(context).size.width * 0.49),
           1: FlexColumnWidth(MediaQuery.of(context).size.width * 0.07),
-          2: FlexColumnWidth(MediaQuery.of(context).size.width * 0.20),
-          3: FlexColumnWidth(MediaQuery.of(context).size.width * 0.20)
+          2: FlexColumnWidth(MediaQuery.of(context).size.width * 0.30),
+          //3: FlexColumnWidth(MediaQuery.of(context).size.width * 0.20)
         },
         children: <TableRow>[
           TableRow(children: [
@@ -28,11 +28,13 @@ class MainMenuButton extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Text(
+                    Expanded(
+                        child: Text(
                       '$tl\n',
+                      overflow: TextOverflow.ellipsis,
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                    )
+                    ))
                   ],
                 ),
                 Row(
@@ -52,11 +54,14 @@ class MainMenuButton extends StatelessWidget {
               children: [
                 Text(
                   isNew,
-                  style:
-                      TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold,
+                  ),
                 )
               ],
             ),
+            /*
             Column(
               children: [
                 ElevatedButton(
@@ -73,10 +78,10 @@ class MainMenuButton extends StatelessWidget {
                           MaterialStateProperty.all(Colors.lightGreen)),
                 )
               ],
-            ),
+            ),*/
             Column(
               children: [
-                ElevatedButton(
+                /*ElevatedButton(
                     onPressed: () {
                       Navigator.push(
                         context,
@@ -88,7 +93,30 @@ class MainMenuButton extends StatelessWidget {
                     child: Text("Result"),
                     style: ButtonStyle(
                         backgroundColor:
-                            MaterialStateProperty.all(Colors.lightGreen)))
+                            MaterialStateProperty.all(Colors.lightGreen)))*/
+                DropdownButton<String>(
+                  items: <String>[
+                    "Start",
+                    "Result",
+                  ].map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      child: Text(value),
+                      value: value,
+                    );
+                  }).toList(),
+                  onChanged: (String? sel) => {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ClassesRoute(raceid, sel)),
+                    )
+                  },
+                  hint: Text("Apri"),
+                  icon: const Icon(Icons.data_usage),
+                  underline: Container(height: 2, color: Colors.lightGreen),
+                  dropdownColor: Colors.lightGreen,
+                  borderRadius: BorderRadius.circular(20),
+                )
               ],
             )
           ])

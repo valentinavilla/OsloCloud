@@ -33,7 +33,10 @@ class ResultBox extends StatelessWidget {
         "NoORg",
       );
     } else {
-      return Text(utf8.decode(orgName.runes.toList()));
+      return Text(
+        utf8.decode(orgName.runes.toList()),
+        overflow: TextOverflow.ellipsis,
+      );
     }
   }
 
@@ -50,11 +53,11 @@ class ResultBox extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Align(
-                  alignment: Alignment.bottomLeft,
+                Expanded(
                   child: Text(
                     utf8.decode(persName.runes.toList()), //Alto sinistra
                     style: const TextStyle(fontSize: 20),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 Text(position!,
@@ -64,10 +67,11 @@ class ResultBox extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Align(
-                  //Basso sinistra
-                  alignment: Alignment.bottomLeft,
-                  child: org(orgName),
+                Expanded(
+                  child:
+                      //Basso sinistra
+
+                      org(orgName),
                 ),
                 Text(
                   timeBehind!,

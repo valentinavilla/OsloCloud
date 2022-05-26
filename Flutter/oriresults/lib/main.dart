@@ -50,6 +50,7 @@ class MyApp extends StatefulWidget {
 
   //Faccio partire lo stato da _MyAppState
 }
+
 class _MyAppState extends State<MyApp> {
   late Future<List<Map<String, dynamic>>> futureRaces;
   late List<Map<String, dynamic>> races;
@@ -91,84 +92,76 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark().copyWith(
-        appBarTheme: AppBarTheme(color: const Color(0xFF253341)),
-        scaffoldBackgroundColor: const Color(0xFF15202B),
-      ),
-      themeMode: isDarkModeEnabled ? ThemeMode.dark : ThemeMode.light,
-      home: Scaffold(
-      //Scaffold è il container a più alto livello
-      appBar: AppBar(
-        //Contiene un app bar
-        title: RichText(
-          // Il titolo contiene un' icona
-          text: const TextSpan(
-            //Qua si può modificare lo stile del titolo
-            //style: , //Theme.of(context).textTheme.body1,
-            children: [
-              TextSpan(
-                  text: 'Available Races',
-                  style: TextStyle(color: Colors.white, fontSize: 20)),
-              WidgetSpan(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 5.0),
-                  child: Icon(Icons.directions_run),
-                ),
-              ),
-            ],
-          ),
+        theme: ThemeData.light(),
+        darkTheme: ThemeData.dark().copyWith(
+          appBarTheme: AppBarTheme(color: const Color(0xFF253341)),
+          scaffoldBackgroundColor: const Color(0xFF15202B),
         ),
+        home: Scaffold(
+          //Scaffold è il container a più alto livello
+          appBar: AppBar(
+            //Contiene un app bar
+            title: RichText(
+              // Il titolo contiene un' icona
+              text: const TextSpan(
+                //Qua si può modificare lo stile del titolo
+                //style: , //Theme.of(context).textTheme.body1,
+                children: [
+                  TextSpan(
+                      text: 'Available Races',
+                      style: TextStyle(color: Colors.white, fontSize: 20)),
+                  WidgetSpan(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 5.0),
+                      child: Icon(Icons.directions_run),
+                    ),
+                  ),
+                ],
+              ),
+            ),
 
-        actions: [
-          DayNightSwitcher(
-                isDarkModeEnabled: isDarkModeEnabled,
-                onStateChanged: onStateChanged,
+            centerTitle: true, //centrato
+            backgroundColor: Color.fromARGB(255, 97, 206, 100),
           ),
-        ],
+          body: Container(
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage("assets/sfondo.jpg"), fit: BoxFit.cover)),
 
-        centerTitle: true, //centrato
-        backgroundColor: Color.fromARGB(255, 97, 206, 100),
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage("assets/sfondo.jpg"), fit: BoxFit.cover)),
-
-        //Il body è un center (contenuto centrato) che avrà una serie di child
-        child: Center(
-            child: FutureBuilder<List<Map<String, dynamic>>>(
-          //I figli sono dei FutureBuilder
-          //ovvero widget costruiti quando avrò i dati disponibili
-          future: futureRaces, //Il future è futureRaces
-          builder: (context, snapshot) {
-            //Bisogna definire come funziona il FutureBuilder
-            //snapshot conterrà la Future quando disponibile
-            if (snapshot.hasData) {
-              //Se snapshot contiene dei dati
-              races = snapshot.data!;
-              //le categorie sono prese da snapshot.data
-              //snapshot.data era un oggetto Nullable (poteva essere nullo)
-              //tramite il ! inizializziamo races come non Nullable (non può essere null)
-              return RefreshIndicator(
-                  key: _refreshIndicatorKey,
-                  color: Colors.white,
-                  backgroundColor: Colors.lightGreen,
-                  strokeWidth: 4.0,
-                  onRefresh: _refresh,
-                  child: ListView.builder(
-                      //Ritorniamo una Lista
-                      itemCount:
-                          races.length, //Il numero di item è casses.length
-                      padding: EdgeInsets.fromLTRB(
-                          MediaQuery.of(context).size.width * 0.02,
-                          MediaQuery.of(context).size.height * 0.01,
-                          MediaQuery.of(context).size.width * 0.02,
-                          MediaQuery.of(context).size.height * 0.01),
-                      itemBuilder: ((context, index) => ElevatedButton(
-                                //Ogni item è un bottone
-                                onPressed:
-                                    null /*() {
+            //Il body è un center (contenuto centrato) che avrà una serie di child
+            child: Center(
+                child: FutureBuilder<List<Map<String, dynamic>>>(
+              //I figli sono dei FutureBuilder
+              //ovvero widget costruiti quando avrò i dati disponibili
+              future: futureRaces, //Il future è futureRaces
+              builder: (context, snapshot) {
+                //Bisogna definire come funziona il FutureBuilder
+                //snapshot conterrà la Future quando disponibile
+                if (snapshot.hasData) {
+                  //Se snapshot contiene dei dati
+                  races = snapshot.data!;
+                  //le categorie sono prese da snapshot.data
+                  //snapshot.data era un oggetto Nullable (poteva essere nullo)
+                  //tramite il ! inizializziamo races come non Nullable (non può essere null)
+                  return RefreshIndicator(
+                      key: _refreshIndicatorKey,
+                      color: Colors.white,
+                      backgroundColor: Colors.lightGreen,
+                      strokeWidth: 4.0,
+                      onRefresh: _refresh,
+                      child: ListView.builder(
+                          //Ritorniamo una Lista
+                          itemCount:
+                              races.length, //Il numero di item è casses.length
+                          padding: EdgeInsets.fromLTRB(
+                              MediaQuery.of(context).size.width * 0.02,
+                              MediaQuery.of(context).size.height * 0.01,
+                              MediaQuery.of(context).size.width * 0.02,
+                              MediaQuery.of(context).size.height * 0.01),
+                          itemBuilder: ((context, index) => ElevatedButton(
+                                    //Ogni item è un bottone
+                                    onPressed:
+                                        null /*() {
                                   //Quando si preme il bottone
                                   Navigator.push(
                                     //Mi muovo in un altra pagina
@@ -181,59 +174,51 @@ class _MyAppState extends State<MyApp> {
                                     //Schermata definita nel secondo file .dart
                                   );
                                 }*/
-                                ,
-                                style: menuButtonStyle(),
+                                    ,
+                                    style: menuButtonStyle(),
 
-                                child: MainMenuButton(
-                                  '${races[index]["DataGara"]}',
-                                  '${races[index]["NomeGara"]}',
-                                  isNuovo(races[index]),
-                                  races[index]["ID"],
-                                ),
-                              )
-                          //Il bottone contiene il nome della categoria dell'indice giusto
-                          )));
-            } else if (snapshot.hasError) {
-              return Text('${snapshot.error}');
-            }
-            //Se invece snapshot contiene un errore, lo mostriamo
+                                    child: MainMenuButton(
+                                      '${races[index]["DataGara"]}',
+                                      '${races[index]["NomeGara"]}',
+                                      isNuovo(races[index]),
+                                      races[index]["ID"],
+                                    ),
+                                  )
+                              //Il bottone contiene il nome della categoria dell'indice giusto
+                              )));
+                } else if (snapshot.hasError) {
+                  return Text('${snapshot.error}');
+                }
+                //Se invece snapshot contiene un errore, lo mostriamo
 
-            return const CircularProgressIndicator(color: Colors.lightGreen);
-            //Di base mostriamo un caricamento (prima di aver ricevuto i dati)
-          },
-        )),
-      ),
-      drawer: Drawer(
-          child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          DayNightSwitcher(
-                isDarkModeEnabled: isDarkModeEnabled,
-                onStateChanged: onStateChanged,
+                return const CircularProgressIndicator(
+                    color: Colors.lightGreen);
+                //Di base mostriamo un caricamento (prima di aver ricevuto i dati)
+              },
+            )),
           ),
-          const DrawerHeader(
-            padding: const EdgeInsets.fromLTRB(125, 50, 75, 80),
-            decoration: BoxDecoration(
-              color: Colors.lightGreen,
-            ),
-            child: Text(
-              'Menù',
-              style: TextStyle(
-                fontSize: 20,
-                color: Colors.white
+          drawer: Drawer(
+              child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              const DrawerHeader(
+                padding: const EdgeInsets.fromLTRB(125, 50, 75, 80),
+                decoration: BoxDecoration(
+                  color: Colors.lightGreen,
+                ),
+                child: Text(
+                  'Menù',
+                  style: TextStyle(fontSize: 20, color: Colors.white),
+                ),
               ),
-            ),
-          ),
-          ListTile(
-            //style: ,
-            title: RichText(
-              // Il titolo contiene un' icona
-              text: const TextSpan(
-                children: [
-                  TextSpan(
-                    text: 'Light/Dark'
-                  ),
-                  /*WidgetSpan(
+              ListTile(
+                //style: ,
+                title: RichText(
+                  // Il titolo contiene un' icona
+                  text: const TextSpan(
+                    children: [
+                      TextSpan(text: 'Light/Dark'),
+                      /*WidgetSpan(
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 10.0),
                       child: DayNightSwitcherIcon(
@@ -242,30 +227,23 @@ class _MyAppState extends State<MyApp> {
                       ),
                     ),
                   ),*/
-                ],
+                    ],
+                  ),
+                ),
               ),
-            ),
+            ],
+          )),
+
+          //Pulsante per il refresh
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              // Show refresh indicator programmatically on button tap.
+              _refreshIndicatorKey.currentState?.show();
+            },
+            backgroundColor: Colors.lightGreen,
+            child: const Icon(Icons.refresh_rounded),
           ),
-        ],
-      )),
-
-      //Pulsante per il refresh
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Show refresh indicator programmatically on button tap.
-          _refreshIndicatorKey.currentState?.show();
-        },
-        backgroundColor: Colors.lightGreen,
-        child: const Icon(Icons.refresh_rounded),
-      ),
-    ));
-  }
-
-  /// Called when the state (day / night) has changed.
-  void onStateChanged(bool isDarkModeEnabled) {
-    setState(() {
-      this.isDarkModeEnabled = isDarkModeEnabled;
-    });
+        ));
   }
 }
 

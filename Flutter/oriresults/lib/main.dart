@@ -214,7 +214,7 @@ class _MyAppState extends State<MyApp> {
         padding: EdgeInsets.zero,
         children: [
           const DrawerHeader(
-            //style:,
+            padding: const EdgeInsets.fromLTRB(125, 65, 75, 80),
             decoration: BoxDecoration(
               color: Colors.lightGreen,
             ),
@@ -228,15 +228,17 @@ class _MyAppState extends State<MyApp> {
                 //Qua si può modificare lo stile del titolo
                 //style: , //Theme.of(context).textTheme.body1,
                 children: [
-                  WidgetSpan(
-                    child: Icon(Icons.account_circle),
+                  TextSpan(
+                    text: 'Light/Dark mode'
                   ),
                   WidgetSpan(
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 5.0),
+                      padding: EdgeInsets.symmetric(horizontal: 10.0),
                     ),
                   ),
-                  TextSpan(text: 'Account'),
+                  WidgetSpan(
+                    child: Icon(Icons.account_circle),
+                  ),
                 ],
               ),
             ),
@@ -245,28 +247,6 @@ class _MyAppState extends State<MyApp> {
               Navigator.pop(context);
             },
           ),
-          ListTile(
-            //style: ,
-            title: RichText(
-              // Il titolo contiene un' icona
-              text: const TextSpan(
-                //Qua si può modificare lo stile del titolo
-                //style: , //Theme.of(context).textTheme.body1,
-                children: [
-                  WidgetSpan(child: Icon(Icons.settings)),
-                  WidgetSpan(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 5.0),
-                    ),
-                  ),
-                  TextSpan(text: 'Settings'),
-                ],
-              ),
-            ),
-            onTap: () {
-              Navigator.pop(context);
-            },
-          )
         ],
       )),
 

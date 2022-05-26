@@ -69,7 +69,7 @@ class ClassResultsRouteState extends State<ClassResultsRoute> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Risultati ${widget.className}'),
+        title: Text('Results (${widget.className})'),
         backgroundColor: Color.fromARGB(255, 97, 206, 100),
       ),
       body: Container(

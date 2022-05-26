@@ -1,16 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
-//import 'dart:html';
 
 import 'package:flutter/material.dart'; //Serve sempre
+import 'package:day_night_switcher/day_night_switcher.dart';
 import 'package:http/http.dart' as http; //Import di funzioni http
-import 'package:oriresults/Route/startOrResultsRoute.dart';
 import 'package:oriresults/Widget/mainMenuButton.dart';
-import 'package:oriresults/Widget/menuButton.dart';
 import 'package:oriresults/Widget/menuButtonStyle.dart';
-
-import 'Route/classesRoute.dart'; //Altro file .dart per definire la schermata
 
 const apiUrl =
     'https://cghd6kwn0k.execute-api.us-east-1.amazonaws.com'; //URL dell' API
@@ -56,16 +51,36 @@ class MyApp extends StatefulWidget {
   //Faccio partire lo stato da _MyAppState
 }
 
+//Seguente commnento va tolto se funziona dark mode
+/*ThemeData _darkTheme = ThemeData(
+    accentColor: Colors.red,
+    brightness: Brightness.dark,
+    primaryColor: Colors.amber,
+    buttonTheme: ButtonThemeData(
+        buttonColor: Colors.amber, disabledColor: Colors.black)
+);
+
+ThemeData _lightTheme = ThemeData(
+    accentColor: Colors.black,
+    brightness: Brightness.light,
+    primaryColor: Colors.lightGreen
+);
+
+
+bool _light = true;
+*/
+
+
 class _MyAppState extends State<MyApp> {
   late Future<List<Map<String, dynamic>>> futureRaces;
-
   late List<Map<String, dynamic>> races;
-
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
 
   //Inizializzo la variabile futureRaces come late, ovvero definita dopo
   //In questo caso viene definita quando si chiama initState
+
+  bool isDarkModeEnabled = false;
 
   @override
   void initState() {
@@ -98,7 +113,14 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return MaterialApp(
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark().copyWith(
+        appBarTheme: AppBarTheme(color: const Color(0xFF253341)),
+        scaffoldBackgroundColor: const Color(0xFF15202B),
+      ),
+      themeMode: isDarkModeEnabled ? ThemeMode.dark : ThemeMode.light,
+      home: Scaffold(
       //Scaffold è il container a più alto livello
       appBar: AppBar(
         //Contiene un app bar
@@ -109,7 +131,7 @@ class _MyAppState extends State<MyApp> {
             //style: , //Theme.of(context).textTheme.body1,
             children: [
               TextSpan(
-                  text: 'Gare disponibili',
+                  text: 'Available Races',
                   style: TextStyle(color: Colors.white, fontSize: 20)),
               WidgetSpan(
                 child: Padding(
@@ -120,18 +142,6 @@ class _MyAppState extends State<MyApp> {
             ],
           ),
         ),
-
-        // Se si vuole aggiungere la dark mode
-
-        /*actions: [
-          IconButton(
-            icon: const Icon(Icons.lightbulb),
-            onPressed: (){
-              Get.isDarkMode
-                ? Get.changeTheme(ThemeData.light())
-                : Get.changeTheme(ThemeData.dark());
-            })
-        ],*/
 
         centerTitle: true, //centrato
         backgroundColor: Color.fromARGB(255, 97, 206, 100),
@@ -213,39 +223,44 @@ class _MyAppState extends State<MyApp> {
           child: ListView(
         padding: EdgeInsets.zero,
         children: [
+          DayNightSwitcher(
+                isDarkModeEnabled: isDarkModeEnabled,
+                onStateChanged: onStateChanged,
+          ),
           const DrawerHeader(
-            padding: const EdgeInsets.fromLTRB(125, 65, 75, 80),
+            padding: const EdgeInsets.fromLTRB(125, 50, 75, 80),
             decoration: BoxDecoration(
               color: Colors.lightGreen,
             ),
-            child: Text('Menù'),
+            child: Text(
+              'Menù',
+              style: TextStyle(
+                fontSize: 20,
+                color: Colors.white
+              ),
+            ),
           ),
           ListTile(
             //style: ,
             title: RichText(
               // Il titolo contiene un' icona
               text: const TextSpan(
-                //Qua si può modificare lo stile del titolo
-                //style: , //Theme.of(context).textTheme.body1,
                 children: [
                   TextSpan(
-                    text: 'Light/Dark mode'
+                    text: 'Light/Dark'
                   ),
-                  WidgetSpan(
+                  /*WidgetSpan(
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 10.0),
+                      child: DayNightSwitcherIcon(
+                        isDarkModeEnabled: isDarkModeEnabled,
+                        onStateChanged: onStateChanged,
+                      ),
                     ),
-                  ),
-                  WidgetSpan(
-                    child: Icon(Icons.account_circle),
-                  ),
+                  ),*/
                 ],
               ),
             ),
-            onTap: () {
-              //update the state, se si vuole navigare in un'altra pagina
-              Navigator.pop(context);
-            },
           ),
         ],
       )),
@@ -259,7 +274,14 @@ class _MyAppState extends State<MyApp> {
         backgroundColor: Colors.lightGreen,
         child: const Icon(Icons.refresh_rounded),
       ),
-    );
+    ));
+  }
+
+  /// Called when the state (day / night) has changed.
+  void onStateChanged(bool isDarkModeEnabled) {
+    setState(() {
+      this.isDarkModeEnabled = isDarkModeEnabled;
+    });
   }
 }
 

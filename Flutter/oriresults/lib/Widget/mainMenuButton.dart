@@ -76,9 +76,9 @@ class MainMenuButton extends StatelessWidget {
                           builder: (context) => ClassesRoute(raceid, sel)),
                     )
                   },
-                  hint: Text("Apri"),
-                  icon: const Icon(Icons.data_usage),
-                  underline: Container(height: 2, color: Colors.lightGreen),
+                  iconSize: 0.1,
+                  alignment: Alignment.center,
+                  hint: const Icon(Icons.arrow_downward),
                   dropdownColor: Colors.lightGreen,
                   borderRadius: BorderRadius.circular(20),
                 )

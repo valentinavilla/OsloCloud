@@ -55,7 +55,7 @@ class ClassesRouteState extends State<ClassesRoute> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Categorie'),
+        title: const Text('Classes'),
         backgroundColor: Color.fromARGB(255, 97, 206, 100),
         centerTitle: true,
       ),

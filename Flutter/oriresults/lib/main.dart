@@ -50,27 +50,6 @@ class MyApp extends StatefulWidget {
 
   //Faccio partire lo stato da _MyAppState
 }
-
-//Seguente commnento va tolto se funziona dark mode
-/*ThemeData _darkTheme = ThemeData(
-    accentColor: Colors.red,
-    brightness: Brightness.dark,
-    primaryColor: Colors.amber,
-    buttonTheme: ButtonThemeData(
-        buttonColor: Colors.amber, disabledColor: Colors.black)
-);
-
-ThemeData _lightTheme = ThemeData(
-    accentColor: Colors.black,
-    brightness: Brightness.light,
-    primaryColor: Colors.lightGreen
-);
-
-
-bool _light = true;
-*/
-
-
 class _MyAppState extends State<MyApp> {
   late Future<List<Map<String, dynamic>>> futureRaces;
   late List<Map<String, dynamic>> races;
@@ -79,8 +58,6 @@ class _MyAppState extends State<MyApp> {
 
   //Inizializzo la variabile futureRaces come late, ovvero definita dopo
   //In questo caso viene definita quando si chiama initState
-
-  bool isDarkModeEnabled = false;
 
   @override
   void initState() {
@@ -142,6 +119,13 @@ class _MyAppState extends State<MyApp> {
             ],
           ),
         ),
+
+        actions: [
+          DayNightSwitcher(
+                isDarkModeEnabled: isDarkModeEnabled,
+                onStateChanged: onStateChanged,
+          ),
+        ],
 
         centerTitle: true, //centrato
         backgroundColor: Color.fromARGB(255, 97, 206, 100),
